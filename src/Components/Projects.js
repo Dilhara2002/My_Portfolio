@@ -2,10 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 
 function Projects() {
   const [filter, setFilter] = useState('all');
-  const [visibleProjects, setVisibleProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredCard, setHoveredCard] = useState(null);
-  const observerRef = useRef();
   const projectRefs = useRef([]);
 
   const projects = [
@@ -15,7 +13,6 @@ function Projects() {
       tags: ["React", "Node.js", "MongoDB", "Redux", "JWT Auth"],
       category: "fullstack",
       github: "https://github.com/Dilhara2002/dish-craft",
-      demo: "https://dish-craft-demo.com",
       image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       stats: { stars: 42, forks: 12, commits: 156 }
     },
@@ -25,7 +22,6 @@ function Projects() {
       tags: ["React", "Firebase", "Material UI", "Drag & Drop"],
       category: "frontend",
       github: "https://github.com/Dilhara2002/taskflow",
-      demo: "https://taskflow-demo.com",
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       stats: { stars: 28, forks: 8, commits: 89 }
     },
@@ -35,7 +31,6 @@ function Projects() {
       tags: ["Next.js", "Tailwind CSS", "Chart.js", "REST API"],
       category: "frontend",
       github: "https://github.com/Dilhara2002/ecotrack",
-      demo: "https://ecotrack-demo.com",
       image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       stats: { stars: 35, forks: 14, commits: 124 }
     },
@@ -45,7 +40,6 @@ function Projects() {
       tags: ["Socket.io", "React", "Monaco Editor", "WebRTC"],
       category: "fullstack",
       github: "https://github.com/Dilhara2002/codecollab",
-      demo: "https://codecollab-demo.com",
       image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
       stats: { stars: 67, forks: 23, commits: 201 }
     },
@@ -55,7 +49,6 @@ function Projects() {
       tags: ["Python", "TensorFlow", "Flask", "NLP"],
       category: "ai",
       github: "https://github.com/Dilhara2002/ai-chatbot",
-      demo: "https://ai-chatbot-demo.com",
       image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       stats: { stars: 91, forks: 31, commits: 243 }
     },
@@ -65,7 +58,6 @@ function Projects() {
       tags: ["React Native", "Node.js", "PostgreSQL", "JWT"],
       category: "mobile",
       github: "https://github.com/Dilhara2002/mobile-banking",
-      demo: "https://banking-app-demo.com",
       image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       stats: { stars: 54, forks: 18, commits: 178 }
     }
@@ -352,34 +344,11 @@ function Projects() {
                       alignItems: 'center',
                       gap: '0.5rem',
                       transition: 'all 0.2s ease',
-                      flex: 1,
+                      width: '100%',
                       justifyContent: 'center'
                     }}
                   >
-                    <span>GitHub</span>
-                  </a>
-
-                  <a
-                    href={project.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      padding: '0.6rem 1.2rem',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      transition: 'all 0.2s ease',
-                      flex: 1,
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <span>Demo</span>
+                    <span>View on GitHub</span>
                   </a>
                 </div>
               </div>
