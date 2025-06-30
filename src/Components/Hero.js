@@ -3,17 +3,16 @@ import profileImage from '../Image/yelow.png';
 
 const Hero = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isVisible, setIsVisible] = useState(false);
   const [typedText, setTypedText] = useState('');
   const heroRef = useRef(null);
   const profileImageRef = useRef(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const fullText = "Full Stack Developer";
   const typingSpeed = 150;
 
   // Typing animation effect
   useEffect(() => {
-    setIsVisible(true);
     let currentIndex = 0;
     const typeTimer = setInterval(() => {
       if (currentIndex <= fullText.length) {
@@ -23,6 +22,7 @@ const Hero = () => {
         clearInterval(typeTimer);
       }
     }, typingSpeed);
+    
 
     return () => clearInterval(typeTimer);
   }, []);
@@ -45,6 +45,11 @@ const Hero = () => {
     }
   }, []);
 
+  // Trigger the rising animation when component mounts
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
   // Floating animation keyframes
   const floatingAnimation = `
     @keyframes float {
@@ -59,14 +64,9 @@ const Hero = () => {
       50% { transform: scale(1.1); opacity: 1; }
     }
     
-    @keyframes slideInLeft {
-      0% { transform: translateX(-100px); opacity: 0; }
-      100% { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideInRight {
-      0% { transform: translateX(100px); opacity: 0; }
-      100% { transform: translateX(0); opacity: 1; }
+    @keyframes riseUp {
+      0% { transform: translateY(100vh); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
     }
     
     @keyframes fadeInUp {
@@ -104,7 +104,11 @@ const Hero = () => {
     color: '#1e293b',
     padding: '0 2rem',
     maxWidth: '1200px',
-    margin: '0 auto'
+    margin: '0 auto',
+    opacity: isLoaded ? 1 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(100vh)',
+    transition: 'transform 1s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease-out',
+    willChange: 'transform, opacity'
   };
 
   const backgroundElements = {
@@ -126,7 +130,9 @@ const Hero = () => {
     background: 'rgba(59, 130, 246, 0.1)',
     filter: 'blur(60px)',
     animation: 'float 8s ease-in-out infinite',
-    transform: `translate(${mousePosition.x * 20}px, ${mousePosition.y * 20}px)`
+    transform: `translate(${mousePosition.x * 20}px, ${mousePosition.y * 20}px)`,
+    opacity: isLoaded ? 1 : 0,
+    transition: 'opacity 0.8s ease-out 0.3s'
   };
 
   const backgroundCircle2 = {
@@ -139,7 +145,9 @@ const Hero = () => {
     background: 'rgba(99, 102, 241, 0.1)',
     filter: 'blur(40px)',
     animation: 'pulse 6s ease-in-out infinite',
-    transform: `translate(${mousePosition.x * -15}px, ${mousePosition.y * -15}px)`
+    transform: `translate(${mousePosition.x * -15}px, ${mousePosition.y * -15}px)`,
+    opacity: isLoaded ? 1 : 0,
+    transition: 'opacity 0.8s ease-out 0.5s'
   };
 
   const containerStyles = {
@@ -155,7 +163,9 @@ const Hero = () => {
   };
 
   const contentStyles = {
-    animation: isVisible ? 'slideInLeft 0.8s ease-out' : 'none'
+    opacity: isLoaded ? 1 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'transform 0.6s ease-out 0.4s, opacity 0.6s ease-out 0.4s'
   };
 
   const greetingStyles = {
@@ -163,7 +173,9 @@ const Hero = () => {
     fontWeight: '400',
     marginBottom: '1rem',
     opacity: '0.9',
-    animation: isVisible ? 'fadeInUp 0.6s ease-out 0.2s both' : 'none'
+    opacity: isLoaded ? 0.9 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'transform 0.6s ease-out 0.5s, opacity 0.6s ease-out 0.5s'
   };
 
   const nameStyles = {
@@ -175,7 +187,9 @@ const Hero = () => {
     backgroundClip: 'text',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
-    animation: isVisible ? 'fadeInUp 0.6s ease-out 0.4s both' : 'none'
+    opacity: isLoaded ? 1 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'transform 0.6s ease-out 0.6s, opacity 0.6s ease-out 0.6s'
   };
 
   const titleStyles = {
@@ -186,7 +200,9 @@ const Hero = () => {
     minHeight: '3rem',
     display: 'flex',
     alignItems: 'center',
-    animation: isVisible ? 'fadeInUp 0.6s ease-out 0.6s both' : 'none'
+    opacity: isLoaded ? 1 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'transform 0.6s ease-out 0.7s, opacity 0.6s ease-out 0.7s'
   };
 
   const descriptionStyles = {
@@ -196,14 +212,18 @@ const Hero = () => {
     marginBottom: '3rem',
     maxWidth: '500px',
     color: '#475569',
-    animation: isVisible ? 'fadeInUp 0.6s ease-out 0.8s both' : 'none'
+    opacity: isLoaded ? 0.9 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'transform 0.6s ease-out 0.8s, opacity 0.6s ease-out 0.8s'
   };
 
   const buttonContainerStyles = {
     display: 'flex',
     gap: '1.5rem',
     marginBottom: '3rem',
-    animation: isVisible ? 'fadeInUp 0.6s ease-out 1s both' : 'none'
+    opacity: isLoaded ? 1 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'transform 0.6s ease-out 0.9s, opacity 0.6s ease-out 0.9s'
   };
 
   const primaryButtonStyles = {
@@ -249,7 +269,9 @@ const Hero = () => {
   const socialLinksStyles = {
     display: 'flex',
     gap: '1.5rem',
-    animation: isVisible ? 'fadeInUp 0.6s ease-out 1.2s both' : 'none'
+    opacity: isLoaded ? 1 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'transform 0.6s ease-out 1s, opacity 0.6s ease-out 1s'
   };
 
   const socialLinkStyles = {
@@ -279,7 +301,9 @@ const Hero = () => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    animation: isVisible ? 'slideInRight 0.8s ease-out 0.3s both' : 'none'
+    opacity: isLoaded ? 1 : 0,
+    transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'transform 0.6s ease-out 0.5s, opacity 0.6s ease-out 0.5s'
   };
 
   const imageBackgroundStyles = {
@@ -290,7 +314,9 @@ const Hero = () => {
     background: 'linear-gradient(45deg,rgb(0, 98, 255),rgb(0, 4, 255))',
     opacity: '0.1',
     animation: 'pulse 4s ease-in-out infinite',
-    transform: `translate(${mousePosition.x * 5}px, ${mousePosition.y * 5}px)`
+    transform: `translate(${mousePosition.x * 5}px, ${mousePosition.y * 5}px)`,
+    opacity: isLoaded ? 0.1 : 0,
+    transition: 'opacity 0.8s ease-out 0.7s'
   };
 
   const imageStyles = {
@@ -303,7 +329,10 @@ const Hero = () => {
     border: '8px solid rgba(255, 255, 255, 0.8)',
     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)',
     transition: 'all 0.3s ease',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    opacity: isLoaded ? 1 : 0,
+    transform: isLoaded ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.9)',
+    transition: 'transform 0.6s ease-out 0.6s, opacity 0.6s ease-out 0.6s'
   };
 
   const handleImageHover = () => {

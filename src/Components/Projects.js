@@ -1,20 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 function Projects() {
   const [filter, setFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [animatedProjects, setAnimatedProjects] = useState(new Set());
   const projectRefs = useRef([]);
 
   const projects = [
     {
       title: "Dish Craft",
-      description: "A social cooking platform where users can share recipes, create meal plans, and connect with food enthusiasts. Built with MERN stack (MongoDB, Express, React, Node.js).",
-      tags: ["React", "Node.js", "MongoDB", "Redux", "JWT Auth"],
+      description: "A cooking community platform where food lovers and chefs share recipes and culinary skills. Built with Spring Boot and modern web technologies.",
+      tags: ["Spring Boot", "Java", "Thymeleaf", "Maven/Gradle", "JPA"],
       category: "fullstack",
-      github: "https://github.com/Dilhara2002/dish-craft",
+      github: "https://github.com/Dihara2002/dish-craft",
       image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-      stats: { stars: 42, forks: 12, commits: 156 }
+      stats: { stars: 1, watching: 1, forks: 0, lastUpdated: "last month" }
     },
     {
       title: "TaskFlow",
@@ -48,8 +49,8 @@ function Projects() {
       description: "Intelligent chatbot with natural language processing capabilities and machine learning integration.",
       tags: ["Python", "TensorFlow", "Flask", "NLP"],
       category: "ai",
-      github: "https://github.com/Dilhara2002/ai-chatbot",
-      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      github: "https://github.com/Dilhara2002/MyHomeStock.git",
+      image: "https://t3.ftcdn.net/jpg/03/28/78/00/360_F_328780060_SFqdJFUTwMLh6uoKv9qaVry9cpY8p498.jpg",
       stats: { stars: 91, forks: 31, commits: 243 }
     },
     {
@@ -75,14 +76,14 @@ function Projects() {
     ? projects 
     : projects.filter(project => project.category === filter);
 
-  // Intersection Observer for scroll animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !animatedProjects.has(entry.target.dataset.projectId)) {
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateY(0px)';
+            setAnimatedProjects(prev => new Set(prev).add(entry.target.dataset.projectId));
           }
         });
       },
@@ -93,10 +94,13 @@ function Projects() {
       if (ref) observer.observe(ref);
     });
 
-    return () => observer.disconnect();
-  }, [filteredProjects]);
+    return () => {
+      projectRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, [filteredProjects, animatedProjects]);
 
-  // Loading animation
   useEffect(() => {
     setIsLoading(true);
     const timer = setTimeout(() => {
@@ -105,59 +109,69 @@ function Projects() {
     return () => clearTimeout(timer);
   }, [filter]);
 
-  // Particle animation background
-  const ParticleBackground = () => {
-    const canvasRef = useRef();
-    
-    useEffect(() => {
+  const ParticleBackground = React.memo(() => {
+    const canvasRef = useRef(null);
+    const particles = useRef([]);
+    const animationFrameId = useRef(null);
+
+    const initParticles = useCallback(() => {
       const canvas = canvasRef.current;
+      if (!canvas) return;
+      
       const ctx = canvas.getContext('2d');
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      
+      particles.current = Array.from({ length: 30 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.5 + 0.1
+      }));
+    }, []);
 
-      const particles = [];
-      const particleCount = 50;
+    const animate = useCallback(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      particles.current.forEach(particle => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
 
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          size: Math.random() * 2 + 1,
-          opacity: Math.random() * 0.5 + 0.1
-        });
-      }
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
 
-      const animate = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        particles.forEach(particle => {
-          particle.x += particle.vx;
-          particle.y += particle.vy;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(59, 130, 246, ${particle.opacity})`;
+        ctx.fill();
+      });
 
-          if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
-          if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+      animationFrameId.current = requestAnimationFrame(animate);
+    }, []);
 
-          ctx.beginPath();
-          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(59, 130, 246, ${particle.opacity})`;
-          ctx.fill();
-        });
-
-        requestAnimationFrame(animate);
-      };
-
+    useEffect(() => {
+      initParticles();
       animate();
 
       const handleResize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        initParticles();
       };
 
       window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
+      
+      return () => {
+        if (animationFrameId.current) {
+          cancelAnimationFrame(animationFrameId.current);
+        }
+        window.removeEventListener('resize', handleResize);
+      };
+    }, [initParticles, animate]);
 
     return (
       <canvas
@@ -167,22 +181,33 @@ function Projects() {
           top: 0,
           left: 0,
           zIndex: -1,
-          opacity: 0.3
+          opacity: 0.3,
+          pointerEvents: 'none'
         }}
       />
     );
-  };
+  });
 
-  const ProjectCard = ({ project, index }) => {
+  const ProjectCard = React.memo(({ project, index }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
+    const imgRef = useRef(null);
+
+    useEffect(() => {
+      const img = new Image();
+      img.src = project.image;
+      img.onload = () => {
+        setImageLoaded(true);
+      };
+    }, [project.image]);
 
     return (
       <div
         ref={el => projectRefs.current[index] = el}
+        data-project-id={project.title}
         style={{
-          opacity: 0,
-          transform: 'translateY(30px)',
+          opacity: animatedProjects.has(project.title) ? 1 : 0,
+          transform: animatedProjects.has(project.title) ? 'translateY(0px)' : 'translateY(30px)',
           transition: 'all 0.6s ease',
           transitionDelay: `${index * 0.1}s`
         }}
@@ -241,15 +266,16 @@ function Projects() {
                   />
                 )}
                 <img
+                  ref={imgRef}
                   src={project.image}
                   alt={project.title}
-                  onLoad={() => setImageLoaded(true)}
                   style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
                     transition: 'transform 0.3s ease',
-                    transform: hoveredCard === index ? 'scale(1.1)' : 'scale(1)'
+                    transform: hoveredCard === index ? 'scale(1.1)' : 'scale(1)',
+                    display: imageLoaded ? 'block' : 'none'
                   }}
                 />
                 <div
@@ -413,7 +439,7 @@ function Projects() {
         </div>
       </div>
     );
-  };
+  });
 
   return (
     <>
@@ -449,6 +475,11 @@ function Projects() {
           
           .filter-button.active {
             animation: float 2s ease-in-out infinite;
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
           }
         `}
       </style>
@@ -609,15 +640,6 @@ function Projects() {
           </a>
         </div>
       </div>
-      
-      <style>
-        {`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}
-      </style>
     </>
   );
 }

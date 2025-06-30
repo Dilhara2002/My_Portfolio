@@ -211,7 +211,7 @@ function Contact() {
             gap: '1.25rem'
           }}
         >
-          <h3 
+          {/* <h3 
             style={{
               fontSize: '1.25rem',
               fontWeight: '600',
@@ -220,9 +220,9 @@ function Contact() {
             }}
           >
             Send me a message
-          </h3>
+          </h3> */}
           
-          <div>
+          {/* <div>
             <label 
               htmlFor="name" 
               style={{
@@ -249,9 +249,9 @@ function Contact() {
               onFocus={(e) => e.target.style.borderColor = '#3182ce'}
               onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
             />
-          </div>
+          </div> */}
           
-          <div>
+          {/* <div>
             <label 
               htmlFor="email" 
               style={{
@@ -278,9 +278,9 @@ function Contact() {
               onFocus={(e) => e.target.style.borderColor = '#3182ce'}
               onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
             />
-          </div>
+          </div> */}
           
-          <div>
+          {/* <div>
             <label 
               htmlFor="message" 
               style={{
@@ -308,9 +308,9 @@ function Contact() {
               onFocus={(e) => e.target.style.borderColor = '#3182ce'}
               onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
             ></textarea>
-          </div>
+          </div> */}
           
-          <button 
+          {/* <button 
             type="submit" 
             style={{
               backgroundColor: '#3182ce',
@@ -327,7 +327,7 @@ function Contact() {
             onMouseOut={(e) => e.target.style.backgroundColor = '#3182ce'}
           >
             Send Message
-          </button>
+          </button> */}
         </form>
       </div>
     </div>

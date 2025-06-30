@@ -6,7 +6,7 @@ function About() {
   const [isVisible, setIsVisible] = useState(false);
   const aboutRef = useRef(null);
   
-  const skills = ['JavaScript', 'React', 'Node.js', 'Python', 'MongoDB', 'Express', 'Git', 'Docker'];
+  const skills = ['JavaScript', 'React', 'Node.js', 'Python', 'MongoDB', 'Express', 'Git'];
   const stats = [
     { value: 15, label: 'Projects Completed' },
     { value: 2, label: 'Years of Experience' },
