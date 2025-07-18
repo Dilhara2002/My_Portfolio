@@ -8,7 +8,7 @@ const Hero = () => {
   const profileImageRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const fullText = "Full Stack Developer";
+  const fullText = "Full Stack Developer,Developer";
   const typingSpeed = 150;
 
   // Typing animation effect

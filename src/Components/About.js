@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import profileImage from '../Image/i1.JPG'; // Using just one image
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import profileImage from '../Image/i1.JPG';
+import { DarkModeContext } from '../context/DarkModeContext'; // You'll need to create this context
 
 function About() {
   const [visibleSkills, setVisibleSkills] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const aboutRef = useRef(null);
+  const { darkMode } = useContext(DarkModeContext); // Get darkMode from context
   
   const skills = ['JavaScript', 'React', 'Node.js', 'Python', 'MongoDB', 'Express', 'Git'];
-  const stats = [
-    { value: 15, label: 'Projects Completed' },
-    { value: 2, label: 'Years of Experience' },
-    { value: 10, label: 'Technologies Learned' }
-  ];
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -65,12 +62,13 @@ function About() {
     }
   `;
 
-  // Style objects
+  // Style objects with dark mode support
   const containerStyles = {
     padding: '5rem 1rem',
     maxWidth: '1200px',
     margin: '0 auto',
-    backgroundColor: '#ffffff',
+    backgroundColor: darkMode ? '#1a202c' : '#ffffff',
+    color: darkMode ? '#e2e8f0' : '#1e293b',
     position: 'relative',
     overflow: 'hidden'
   };
@@ -86,7 +84,7 @@ function About() {
   const titleStyles = {
     fontSize: '2.5rem',
     fontWeight: '800',
-    color: '#1e293b',
+    color: darkMode ? '#ffffff' : '#1e293b',
     marginBottom: '1rem',
     position: 'relative',
     display: 'inline-block'
@@ -107,7 +105,9 @@ function About() {
     height: '350px',
     borderRadius: '12px',
     overflow: 'hidden',
-    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+    boxShadow: darkMode 
+      ? '0 10px 15px -3px rgba(0, 0, 0, 0.3)' 
+      : '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
     animation: isVisible ? 'slideInLeft 0.8s ease-out both' : 'none'
   };
 
@@ -128,6 +128,10 @@ function About() {
     }
   };
 
+  const textStyles = {
+    color: darkMode ? '#e2e8f0' : '#1e293b'
+  };
+
   return (
     <>
       <style>{animations}</style>
@@ -137,7 +141,7 @@ function About() {
             About Me
             <span style={underlineStyles} />
           </h2>
-          <p>Get to know more about my journey, skills, and passions</p>
+          <p style={textStyles}>Get to know more about my journey, skills, and passions</p>
         </div>
 
         <div style={contentContainerStyles}>
@@ -149,19 +153,25 @@ function About() {
             />
           </div>
 
-          <div>
+          <div style={textStyles}>
             <h3>My Journey</h3>
             <p>
-            My Journey
-
-I'm currently pursuing a Bachelor of Science Honours in Information Technology, specializing in Information Technology at the Sri Lanka Institute of Information Technology (SLIIT). My passion for technology was inspired by my role model, whose journey in the tech world motivated me to follow a similar path. Over the years, I've developed a strong interest in both frontend and backend development. My ultimate goal is to become a Full-Stack Developer, mastering the entire development process. I aspire to work at a leading tech company or even launch my own startup, building innovative solutions that make a real impact.
+              I'm currently pursuing a Bachelor of Science Honours in Information Technology, 
+              specializing in Information Technology at the Sri Lanka Institute of Information 
+              Technology (SLIIT). My passion for technology was inspired by my role model, 
+              whose journey in the tech world motivated me to follow a similar path. Over the 
+              years, I've developed a strong interest in both frontend and backend development. 
+              My ultimate goal is to become a Full-Stack Developer, mastering the entire 
+              development process. I aspire to work at a leading tech company or even launch 
+              my own startup, building innovative solutions that make a real impact.
             </p>
             
             <h3>My Skills</h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
               {skills.map((skill, index) => (
                 <span key={skill} style={{
-                  backgroundColor: '#e0f2fe',
+                  backgroundColor: darkMode ? '#2d3748' : '#e0f2fe',
+                  color: darkMode ? '#ffffff' : '#0369a1',
                   padding: '0.5rem 1rem',
                   borderRadius: '9999px',
                   opacity: index < visibleSkills ? 1 : 0,

@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Dark mode styles */
+.dark {
+  @apply bg-gray-900 text-gray-100;
+}
+
+.dark .App-header {
+  background-color: #1a202c;
+}
+
+/* Add other dark mode specific styles as needed */

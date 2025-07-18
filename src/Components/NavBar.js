@@ -3,15 +3,23 @@ import React, { useState, useEffect } from 'react';
 function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    // Check local storage or system preference
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode ? JSON.parse(savedMode) : 
+      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  });
 
-  // Apply dark mode class to body when darkMode changes
+  // Apply dark mode class to document and save preference
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
     }
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
   }, [darkMode]);
 
   useEffect(() => {
@@ -43,7 +51,7 @@ function NavBar() {
     e.preventDefault();
     setActiveSection(id);
     const element = document.getElementById(id);
-    const offset = 80; // Adjust this value based on your navbar height
+    const offset = 80;
     const bodyRect = document.body.getBoundingClientRect().top;
     const elementRect = element.getBoundingClientRect().top;
     const elementPosition = elementRect - bodyRect;
@@ -59,9 +67,23 @@ function NavBar() {
     setDarkMode(!darkMode);
   };
 
+  const navLinkStyle = (section) => ({
+    textDecoration: 'none',
+    color: activeSection === section ? '#ffedd5' : 'white',
+    fontWeight: activeSection === section ? '600' : '500',
+    padding: '0.5rem 1rem',
+    borderRadius: '0.375rem',
+    transition: 'all 0.2s ease-in-out',
+    position: 'relative',
+    fontSize: '1.1rem',
+    '&:hover': {
+      color: '#ffedd5'
+    }
+  });
+
   return (
     <nav 
-      className="dark:bg-gray-900 dark:bg-opacity-95"
+      className="dark:bg-gray-900 dark:bg-opacity-95 transition-colors duration-300"
       style={{
         backgroundColor: scrolled ? 'rgba(37, 99, 235, 0.95)' : 'rgb(37, 99, 235)',
         color: 'white',
@@ -74,50 +96,45 @@ function NavBar() {
         backdropFilter: scrolled ? 'blur(8px)' : 'none'
       }}
     >
-      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontWeight: 'bold', fontSize: '1.25rem' }}></div>
+      <div style={{ 
+        maxWidth: '1200px', 
+        margin: '0 auto', 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center' 
+      }}>
+        <div style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>
+          <span className="dark:text-white">Ishan</span>
+        </div>
         
-        <ul 
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '2rem',
-            listStyle: 'none',
-            padding: 0,
-            margin: 0
-          }}
-        >
+        <ul style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '2rem',
+          listStyle: 'none',
+          padding: 0,
+          margin: 0
+        }}>
           <li>
             <a 
               href="#hero" 
-              style={{
-                textDecoration: 'none',
-                color: activeSection === 'hero' ? '#ffedd5' : 'white',
-                fontWeight: activeSection === 'hero' ? '600' : '500',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.375rem',
-                transition: 'all 0.2s ease-in-out',
-                position: 'relative',
-                fontSize: '1.1rem'
-              }}
+              style={navLinkStyle('hero')}
               onClick={(e) => handleClick(e, 'hero')}
               onMouseEnter={(e) => e.target.style.color = '#ffedd5'}
               onMouseLeave={(e) => e.target.style.color = activeSection === 'hero' ? '#ffedd5' : 'white'}
             >
               {activeSection === 'hero' && (
-                <span 
-                  style={{
-                    position: 'absolute',
-                    bottom: '-4px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '6px',
-                    height: '6px',
-                    backgroundColor: '#ffedd5',
-                    borderRadius: '50%'
-                  }}
-                />
+                <span style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: '#ffedd5',
+                  borderRadius: '50%'
+                }} />
               )}
               Home
             </a>
@@ -125,33 +142,22 @@ function NavBar() {
           <li>
             <a 
               href="#about" 
-              style={{
-                textDecoration: 'none',
-                color: activeSection === 'about' ? '#ffedd5' : 'white',
-                fontWeight: activeSection === 'about' ? '600' : '500',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.375rem',
-                transition: 'all 0.2s ease-in-out',
-                position: 'relative',
-                fontSize: '1.1rem'
-              }}
+              style={navLinkStyle('about')}
               onClick={(e) => handleClick(e, 'about')}
               onMouseEnter={(e) => e.target.style.color = '#ffedd5'}
               onMouseLeave={(e) => e.target.style.color = activeSection === 'about' ? '#ffedd5' : 'white'}
             >
               {activeSection === 'about' && (
-                <span 
-                  style={{
-                    position: 'absolute',
-                    bottom: '-4px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '6px',
-                    height: '6px',
-                    backgroundColor: '#ffedd5',
-                    borderRadius: '50%'
-                  }}
-                />
+                <span style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: '#ffedd5',
+                  borderRadius: '50%'
+                }} />
               )}
               About
             </a>
@@ -159,33 +165,22 @@ function NavBar() {
           <li>
             <a 
               href="#projects" 
-              style={{
-                textDecoration: 'none',
-                color: activeSection === 'projects' ? '#ffedd5' : 'white',
-                fontWeight: activeSection === 'projects' ? '600' : '500',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.375rem',
-                transition: 'all 0.2s ease-in-out',
-                position: 'relative',
-                fontSize: '1.1rem'
-              }}
+              style={navLinkStyle('projects')}
               onClick={(e) => handleClick(e, 'projects')}
               onMouseEnter={(e) => e.target.style.color = '#ffedd5'}
               onMouseLeave={(e) => e.target.style.color = activeSection === 'projects' ? '#ffedd5' : 'white'}
             >
               {activeSection === 'projects' && (
-                <span 
-                  style={{
-                    position: 'absolute',
-                    bottom: '-4px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '6px',
-                    height: '6px',
-                    backgroundColor: '#ffedd5',
-                    borderRadius: '50%'
-                  }}
-                />
+                <span style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: '#ffedd5',
+                  borderRadius: '50%'
+                }} />
               )}
               Projects
             </a>
@@ -193,33 +188,22 @@ function NavBar() {
           <li>
             <a 
               href="#contact" 
-              style={{
-                textDecoration: 'none',
-                color: activeSection === 'contact' ? '#ffedd5' : 'white',
-                fontWeight: activeSection === 'contact' ? '600' : '500',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.375rem',
-                transition: 'all 0.2s ease-in-out',
-                position: 'relative',
-                fontSize: '1.1rem'
-              }}
+              style={navLinkStyle('contact')}
               onClick={(e) => handleClick(e, 'contact')}
               onMouseEnter={(e) => e.target.style.color = '#ffedd5'}
               onMouseLeave={(e) => e.target.style.color = activeSection === 'contact' ? '#ffedd5' : 'white'}
             >
               {activeSection === 'contact' && (
-                <span 
-                  style={{
-                    position: 'absolute',
-                    bottom: '-4px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '6px',
-                    height: '6px',
-                    backgroundColor: '#ffedd5',
-                    borderRadius: '50%'
-                  }}
-                />
+                <span style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: '#ffedd5',
+                  borderRadius: '50%'
+                }} />
               )}
               Contact
             </a>
@@ -239,7 +223,10 @@ function NavBar() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'all 0.2s ease-in-out'
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            }
           }}
           aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
         >
